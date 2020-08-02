@@ -20,11 +20,17 @@ class _HomeScreenState extends State<HomeScreen> {
           elevation: 0.0,
           actions: <Widget>[
             IconButton(
+              icon: Icon(Icons.search),
+              iconSize: 30.0,
+              color: Colors.white,
+              onPressed: (){},
+            ),
+            IconButton(
               icon: Icon(Icons.more_vert),
               iconSize: 30.0,
               color: Colors.white,
               onPressed: (){},
-            )
+            ),
           ],
         ),
         body: Column(
@@ -42,6 +48,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
+//            Container(
+//              margin: EdgeInsets.symmetric(horizontal: 18.0),
+//              padding: EdgeInsets.symmetric(horizontal: 10.0),
+//              decoration: BoxDecoration(
+//                color: Colors.grey[100],
+//                borderRadius: BorderRadius.circular(15.0),
+//              ),
+//              child: TextField(
+//                decoration: InputDecoration(
+//                  icon: Icon(Icons.search),
+//                  hintText: 'search for friends',
+//                  border: InputBorder.none,
+//                ),
+//              ),
+//            ),
+            SizedBox(height: 25.0),
           ],
         ),
       ),
