@@ -12,6 +12,24 @@ class MyChat extends StatefulWidget {
 class _MyChatState extends State<MyChat> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("ChatNow", style: TextStyle(
+            fontSize: 28.0,
+            fontWeight: FontWeight.bold,
+          ),),
+          elevation: 0.0,
+          actions: <Widget>[
+             IconButton(
+                 icon: Icon(Icons.more_vert),
+               iconSize: 30.0,
+               color: Colors.white,
+               onPressed: (){},
+             )
+          ],
+        ),
+      ),
+    );
   }
 }
