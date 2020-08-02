@@ -1,35 +1,22 @@
+import 'package:chatnow/Screens/home.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(MyChat());
 }
 
-class MyChat extends StatefulWidget {
-  @override
-  _MyChatState createState() => _MyChatState();
-}
 
-class _MyChatState extends State<MyChat> {
+class MyChat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("ChatNow", style: TextStyle(
-            fontSize: 28.0,
-            fontWeight: FontWeight.bold,
-          ),),
-          elevation: 0.0,
-          actions: <Widget>[
-             IconButton(
-                 icon: Icon(Icons.more_vert),
-               iconSize: 30.0,
-               color: Colors.white,
-               onPressed: (){},
-             )
-          ],
-        ),
+    return MaterialApp(
+      title: 'ChatNow',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: Colors.blue,
+        accentColor: Color(0xFFFE9EB),
       ),
+      home: HomeScreen(),
     );
   }
 }
