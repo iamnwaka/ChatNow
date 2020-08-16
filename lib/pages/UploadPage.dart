@@ -198,7 +198,7 @@ class _UploadPageState extends State<UploadPage> with AutomaticKeepAliveClientMi
         .setData({
       "postId": postId,
       "ownerId": widget.googleCurrentUser.id,
-      "timestamp": timestamp,
+      "timestamp": DateTime.now(),
       "likes": {},
       "username": widget.googleCurrentUser.username,
       "description": description,

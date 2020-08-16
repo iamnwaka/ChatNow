@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatnow/models/user.dart';
 import 'package:chatnow/pages/HomePage.dart';
+import 'package:chatnow/pages/ProfilePage.dart';
 import 'package:chatnow/widgets/ProgressWidget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -143,7 +144,8 @@ class UserResult extends StatelessWidget {
         child: Column(
           children: [
             GestureDetector(
-              onTap: () => print("Tapped"),
+              onTap: () =>
+                  displayUserProfile(context, userProfileId: eachUser.id),
               child: ListTile(
                 leading: CircleAvatar(
                   backgroundColor: Colors.black,
@@ -170,5 +172,14 @@ class UserResult extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  displayUserProfile(BuildContext context, {String userProfileId}) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ProfilePage(
+                  userProfileId: userProfileId,
+                )));
   }
 }

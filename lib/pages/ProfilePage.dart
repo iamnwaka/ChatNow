@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatnow/models/user.dart';
 import 'package:chatnow/pages/EditProfilePage.dart';
@@ -22,12 +24,18 @@ class _ProfilePageState extends State<ProfilePage> {
   int countPost = 0;
   List<Post> postsList = [];
   String postOrientation = "grid";
+  int countTotalFolowers = 0;
+  int countTotalFollowings = 0;
+  bool following = false;
 
   get gridTilesList => null;
 
   void initState() {
     super.initState();
     getAllProfilePosts();
+    getAllFollowers();
+    getAllFollowings();
+    checkIfAlreadyFollowing();
   }
 
   createProfileTopview() {
@@ -56,9 +64,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              createColumns("Posts", 0),
-                              createColumns("Followers", 0),
-                              createColumns("Following", 0),
+                              createColumns("Posts", countPost),
+                              createColumns("Followers", countTotalFolowers),
+                              createColumns("Following", countTotalFollowings ),
                             ],
                           )
                         ],
@@ -146,6 +154,16 @@ class _ProfilePageState extends State<ProfilePage> {
         title: "EDit Profile",
         performFunction: editUserProfile,
       );
+    } else if (following) {
+      return createButtonTitleAndFunction(
+        title: "Unfollow",
+        performFunction: controlUnfollowUser,
+      );
+    } else if (!following) {
+      return createButtonTitleAndFunction(
+        title: "Follow",
+        performFunction: controlFollowUser,
+      );
     }
   }
 
@@ -161,14 +179,15 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Text(
             title,
             style: TextStyle(
-              color: Colors.grey,
+              color: following ?  Colors.grey: Colors.white70,
               fontWeight: FontWeight.bold,
             ),
           ),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: Colors.black,
+            color: following ?  Colors.black : Colors.white70,
             borderRadius: BorderRadius.circular(6.0),
+            border: Border.all(color: following ? Colors.grey : Colors.grey,),
           ),
         ),
       ),
@@ -299,6 +318,109 @@ class _ProfilePageState extends State<ProfilePage> {
   setOrientation(String orientation) {
     setState(() {
       this.postOrientation = orientation;
+    });
+  }
+
+  controlUnfollowUser() {
+    setState(() {
+      following = false;
+    });
+    followersReference
+        .document(widget.userProfileId)
+        .collection("userFollowers")
+        .document(currentOnlineUserId)
+        .get()
+        .then((document) {
+      if (document.exists) {
+        document.reference.delete();
+      }
+    });
+
+    followingReference
+        .document(currentOnlineUserId)
+        .collection("userFollowing")
+        .document(widget.userProfileId)
+        .get()
+        .then((document) {
+      if (document.exists) {
+        document.reference.delete();
+      }
+    });
+
+    activityFeedReference
+        .document(widget.userProfileId)
+        .collection("feedItems")
+        .document(currentOnlineUserId)
+        .get()
+        .then((document) {
+      if (document.exists) {
+        document.reference.delete();
+      }
+    });
+  }
+
+  controlFollowUser() {
+    setState(() {
+      following = true;
+    });
+
+    followersReference
+        .document(widget.userProfileId)
+        .collection("userFollowers")
+        .document(currentOnlineUserId)
+        .setData({});
+
+    followingReference
+        .document(currentOnlineUserId)
+        .collection("userFollowing")
+        .document(widget.userProfileId)
+        .setData({});
+
+    activityFeedReference
+        .document(widget.userProfileId)
+        .collection("feedItems")
+        .document(currentOnlineUserId)
+        .setData({
+      "type": "follow",
+      "ownerId": widget.userProfileId,
+      "username": currentUser.username,
+      "timestamp": DateTime.now(),
+      "userFollowing": currentUser.url,
+      "userId": currentOnlineUserId,
+    });
+  }
+
+  getAllFollowers() async {
+    QuerySnapshot querySnapshot = await followersReference
+        .document(widget.userProfileId)
+        .collection("userFollowers")
+        .getDocuments();
+
+    setState(() {
+      countTotalFolowers = querySnapshot.documents.length;
+    });
+  }
+
+  getAllFollowings() async {
+    QuerySnapshot querySnapshot = await followingReference
+        .document(widget.userProfileId)
+        .collection("userFollowing")
+        .getDocuments();
+
+    setState(() {
+      countTotalFollowings = querySnapshot.documents.length;
+    });
+  }
+
+  checkIfAlreadyFollowing() async {
+    DocumentSnapshot documentSnapshot = await followersReference
+        .document(widget.userProfileId)
+        .collection("userFollowers")
+        .document(currentOnlineUserId)
+        .get();
+
+    setState(() {
+      following = documentSnapshot.exists;
     });
   }
 }

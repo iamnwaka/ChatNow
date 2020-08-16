@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatnow/models/user.dart';
 import 'package:chatnow/pages/CommentsPage.dart';
 import 'package:chatnow/pages/HomePage.dart';
+import 'package:chatnow/pages/ProfilePage.dart';
 import 'package:chatnow/widgets/ProgressWidget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -123,7 +124,7 @@ class _PostState extends State<Post> {
             backgroundColor: Colors.grey,
           ),
           title: GestureDetector(
-            onTap: () => print("Show profile"),
+            onTap: () => displayUserProfile(context, userProfileId: user.id),
             child: Text(
               user.username,
               style: TextStyle(
@@ -181,7 +182,7 @@ class _PostState extends State<Post> {
         "type": "like",
         "username": currentUser.username,
         "userId": currentUser.id,
-        "timestamp": timestamp,
+        "timestamp": DateTime.now(),
         "url": url,
         "postId": postId,
         "userProfileImg": currentUser.url,
@@ -326,5 +327,13 @@ class _PostState extends State<Post> {
         postImageUrl: url,
       );
     }));
+  }
+  displayUserProfile(BuildContext context, {String userProfileId}) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ProfilePage(
+                  userProfileId: userProfileId,
+                )));
   }
 }
